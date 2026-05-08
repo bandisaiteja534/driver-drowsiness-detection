@@ -3,6 +3,5 @@ numpy==1.26.4
 opencv-python-headless==4.10.0.84
 Pillow==10.4.0
 imutils==0.5.4
-scipy==1.13.1
 mediapipe==0.10.14
 gunicorn==22.0.0
