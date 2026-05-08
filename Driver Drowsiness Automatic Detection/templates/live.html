@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Live Detection - WEB BASED REAL-TIME FACIAL FEATURES-BASED DDAS</title>
+	<link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body data-alarm-path="{{ url_for('static', filename='assets/alarm.mp3') }}">
+	<nav class="navbar">
+		<div class="nav-container">
+			<div class="nav-logo">
+				<span>DDAS</span>
+			</div>
+			<ul class="nav-menu">
+				<li class="nav-item">
+					<a href="/home" class="nav-link nav-button">Home</a>
+				</li>
+				<li class="nav-item">
+					<a href="/live" class="nav-link nav-button">Live Feed</a>
+				</li>
+				<li class="nav-item">
+					<a href="/graphs" class="nav-link nav-button">Graphs</a>
+				</li>
+				<li class="nav-item">
+					<a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+				</li>
+				<li class="nav-item">
+					<a href="/logout" class="nav-link nav-button">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="section section-dark" style="min-height: 100vh;">
+		<div class="live-container">
+			<div class="live-header">
+				<h1>Live Driver Drowsiness Detection and Alerts (DDAS)</h1>
+				<p>Real-time monitoring of driver fatigue levels</p>
+			</div>
+
+			<div class="detection-wrapper">
+				<div class="video-container">
+					<img id="videoElement" src="/drowsy/api/video_feed?t=0" alt="Video Feed"
+						style="width: 100%; height: auto; display: block; object-fit: contain;"
+						onerror="this.onerror=null; this.src='/drowsy/api/video_feed?t=' + new Date().getTime();">
+				</div>
+
+				<div class="dashboard-panel">
+					<h2 class="dashboard-title">Fatigue Dashboard</h2>
+
+					<div class="metric-card">
+						<div class="metric-label">
+							<span class="status-indicator" id="statusIndicator"></span>
+							Status
+						</div>
+						<div class="metric-value" id="statusValue">Initializing...</div>
+					</div>
+
+					<div class="metric-card">
+						<div class="metric-label">Fatigue Score</div>
+						<div class="metric-value" id="fatigueScore">0</div>
+					</div>
+
+					<div class="metric-card">
+						<div class="metric-label">Eye Aspect Ratio (EAR)</div>
+						<div class="metric-value" id="earValue">0.00</div>
+					</div>
+
+					<div class="metric-card">
+						<div class="metric-label">Mouth Aspect Ratio (MAR)</div>
+						<div class="metric-value" id="marValue">0.00</div>
+					</div>
+
+					<div class="metric-card">
+						<div class="metric-label">Alarm Status</div>
+						<div class="metric-value" id="alarmStatus" style="font-size: 18px;">Inactive</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="controls">
+				<button class="btn btn-primary" onclick="startDetection()">Start Detection</button>
+				<button class="btn btn-danger" onclick="stopDetection()">Stop Detection</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="{{ url_for('static', filename='js/live.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DDAS - Upload and Classification</title>
+    <link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span>DDAS</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home" class="nav-link nav-button">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/live" class="nav-link nav-button">Live Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/graphs" class="nav-link nav-button">Graphs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link nav-button">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section section-dark" style="padding-top: 120px; min-height: 100vh;">
+        <div class="features-section">
+            <h1 class="features-title">Manual Analysis</h1>
+            <div class="features-grid">
+                <!-- Image Upload Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3 class="feature-card-title">Image Upload</h3>
+                    <p class="feature-card-text">Upload a driver image for deep learning analysis.</p>
+                    <form action="/predict_image" method="post" enctype="multipart/form-data" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="image" required>
+                        </div>
+                        <button type="submit" class="card-btn">Predict Image</button>
+                    </form>
+                </div>
+
+                <!-- Video Upload Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎥</div>
+                    <h3 class="feature-card-title">Video Upload</h3>
+                    <p class="feature-card-text">Upload a video clip for temporal fatigue analysis.</p>
+                    <form action="/predict_video" method="post" enctype="multipart/form-data" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="video" required>
+                        </div>
+                        <button type="submit" class="card-btn">Predict Video</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

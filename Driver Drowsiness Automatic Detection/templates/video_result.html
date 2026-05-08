@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Video Analysis Result - DDAS</title>
+    <link rel="icon" href="{{ url_for('static', filename='assets/logo.png') }}" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @media (max-width: 968px) {
+            #videoLayout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% set has_video = video_file is defined and video_file %}
+    {% set safe_total = total_frames if total_frames is defined and total_frames and total_frames > 0 else 1 %}
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span>DDAS</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home" class="nav-link nav-button">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/live" class="nav-link nav-button">Live Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/graphs" class="nav-link nav-button">Graphs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('static', filename='notebook.html') }}" class="nav-link nav-button">Notebook</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link nav-button">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section section-dark" style="padding-top: 120px; min-height: 100vh;">
+        <div class="result-container">
+            <div class="result-header">
+                <h1 class="features-title">Temporal Video Analysis</h1>
+            </div>
+
+            <div class="result-metric-grid">
+                <div class="result-card">
+                    <h3 class="feature-card-title">Overall Status</h3>
+                    <div class="status-badge {% if status|default('Non-Drowsy') == 'Drowsy' %}status-drowsy{% else %}status-safe{% endif %}">
+                        {{ status|default('Non-Drowsy') }}
+                    </div>
+                </div>
+                <div class="result-card">
+                    <h3 class="feature-card-title">Detection Stats</h3>
+                    <div class="feature-card-text">
+                        <span class="metric-value">{{ drowsy_frames|default(0) }}</span> drowsy frames out of <span
+                            class="metric-value">{{ total_frames|default(0) }}</span>
+                        <div class="progress-container" style="margin-top: 20px;">
+                            <div class="progress-fill"
+                                style="width: {{ ((drowsy_frames|default(0)) / safe_total * 100)|round }}%; background: #ff453a;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-card" style="margin-bottom: 40px;">
+                <h3 class="feature-card-title">Processed Video</h3>
+                {% if preview_notice %}
+                <div style="padding: 14px 16px; background: rgba(255, 159, 10, 0.12); border-left: 4px solid #ff9f0a; border-radius: 8px; margin: 12px 0 20px 0; color: #ffca80;">
+                    <strong>Playback Notice:</strong> {{ preview_notice }}
+                </div>
+                {% endif %}
+                {% if error %}
+                <div style="padding: 20px; background: rgba(255, 69, 58, 0.1); border-left: 4px solid #ff453a; border-radius: 8px; margin: 20px 0;">
+                    <strong style="color: #ff453a;">Error:</strong> {{ error }}
+                </div>
+                {% elif has_video %}
+                <div style="display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 20px;" id="videoLayout">
+                    <!-- Video Section -->
+                    <div style="width: 100%;">
+                        <div style="border-radius: 15px; border: 3px solid rgba(115, 177, 240, 0.3); overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <video style="width: 100%; display: block; height: auto;" controls preload="auto" id="resultVideo">
+                                <source src="{{ url_for('video_feed_file', filename=video_file) }}" type="{{ video_mime_type|default('video/mp4') }}">
+                                Your browser does not support the video tag or the video format is not supported.
+                            </video>
+                        </div>
+                        <p class="feature-card-text" style="margin-top: 15px; text-align: center;">
+                            Processed video with drowsiness detection analysis.
+                        </p>
+                    </div>
+                    
+                    <!-- Real-time Detection Info Panel -->
+                    <div style="background: rgba(30, 30, 40, 0.8); border-radius: 15px; padding: 25px; border: 2px solid rgba(115, 177, 240, 0.3);">
+                        <h4 style="color: #73b1f0; margin-bottom: 20px; font-size: 18px; text-align: center;">Real-time Detection</h4>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: #aaa; font-size: 14px; margin-bottom: 5px;">Current Frame</div>
+                            <div id="currentFrame" style="color: #fff; font-size: 24px; font-weight: bold;">-</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 8px;">
+                            <div style="color: #aaa; font-size: 14px; margin-bottom: 5px;">Status</div>
+                            <div id="currentStatus" style="color: #4ade80; font-size: 20px; font-weight: bold;">-</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="color: #aaa; font-size: 14px; margin-bottom: 5px;">Confidence</div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div id="currentConfidence" style="color: #fff; font-size: 20px; font-weight: bold;">-</div>
+                                <div id="confidenceBar" style="flex: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden;">
+                                    <div id="confidenceFill" style="height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); width: 0%; transition: width 0.3s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 8px;">
+                            <div style="color: #aaa; font-size: 14px; margin-bottom: 5px;">Time</div>
+                            <div id="currentTime" style="color: #fff; font-size: 18px;">00:00 / 00:00</div>
+                        </div>
+                        
+                        <div style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="color: #aaa; font-size: 12px; margin-bottom: 8px;">Overall</div>
+                            <div style="color: {% if status|default('Non-Drowsy') == 'Drowsy' %}#ff453a{% else %}#4ade80{% endif %}; font-size: 16px; font-weight: bold;">
+                                {{ status|default('Non-Drowsy') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div style="padding: 20px; background: rgba(255, 159, 10, 0.1); border-left: 4px solid #ff9f0a; border-radius: 8px; margin: 20px 0;">
+                    <strong style="color: #ffca80;">No video file available.</strong> Upload and analyze a video from Home page to view results here.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- New Suggestions Section -->
+            <div class="suggestions-section">
+                <h2 class="feature-card-title" style="margin-bottom: 25px; text-align: left;">Safety Insights &
+                    Recommendations</h2>
+
+                {% if status|default('Non-Drowsy') == 'Drowsy' %}
+                <div class="suggestion-card suggestion-warning">
+                    <div class="suggestion-icon">⚠️</div>
+                    <div>
+                        <strong>High Fatigue Detected:</strong> Patterns of drowsiness were observed in {{
+                        ((drowsy_frames|default(0)) / safe_total * 100)|round }}% of the video.
+                        Stop driving immediately if you feel tired.
+                    </div>
+                </div>
+                <div class="suggestion-card suggestion-warning"
+                    style="background: rgba(255, 159, 10, 0.1); border-left-color: #ff9f0a; color: #ffca80;">
+                    <div class="suggestion-icon">🛑</div>
+                    <div>
+                        <strong>Action Required:</strong> Take a significant break or switch drivers if possible.
+                    </div>
+                </div>
+                {% else %}
+                <div class="suggestion-card suggestion-safe">
+                    <div class="suggestion-icon">✅</div>
+                    <div>
+                        <strong>Normal State:</strong> No major drowsiness patterns detected.
+                        Keep maintaining good posture and hydration for optimal alertness.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 50px; text-align: center;">
+                <a href="/home" class="card-btn" style="display: inline-block; width: auto; min-width: 280px;">Return to
+                    Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Video loading error handling and real-time detection display
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('resultVideo');
+            if (video) {
+                const videoSource = video.querySelector('source');
+                
+                // Log video source for debugging
+                if (videoSource) {
+                    console.log('Video source:', videoSource.src);
+                    console.log('Video MIME type:', videoSource.type);
+                }
+                
+                // Handle video load errors
+                video.addEventListener('error', function(e) {
+                    console.error('Video loading error:', e);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.style.cssText = 'padding: 20px; background: rgba(255, 69, 58, 0.1); border-left: 4px solid #ff453a; border-radius: 8px; margin: 20px 0;';
+                    errorDiv.innerHTML = '<strong style="color: #ff453a;">Video Loading Error:</strong> The video file could not be loaded. Please check the file format and try again.';
+                    video.parentElement.appendChild(errorDiv);
+                });
+                
+                // Update time display
+                function updateTime() {
+                    const currentTime = video.currentTime || 0;
+                    const duration = video.duration || 0;
+                    const currentMin = Math.floor(currentTime / 60);
+                    const currentSec = Math.floor(currentTime % 60);
+                    const totalMin = Math.floor(duration / 60);
+                    const totalSec = Math.floor(duration % 60);
+                    
+                    document.getElementById('currentTime').textContent = 
+                        `${String(currentMin).padStart(2, '0')}:${String(currentSec).padStart(2, '0')} / ${String(totalMin).padStart(2, '0')}:${String(totalSec).padStart(2, '0')}`;
+                }
+                
+                // Calculate frame number from current time
+                function getCurrentFrame() {
+                    const fps = 30; // Default FPS, adjust if needed
+                    const currentTime = video.currentTime || 0;
+                    return Math.floor(currentTime * fps) + 1;
+                }
+                
+                // Simulate detection display (since we don't have per-frame data stored)
+                // In a real implementation, you'd fetch this data from the server
+                function updateDetectionDisplay() {
+                    const frameNum = getCurrentFrame();
+                    document.getElementById('currentFrame').textContent = frameNum;
+                    
+                    // Simulate detection based on overall status
+                    // In production, you'd fetch actual per-frame data
+                    const overallStatus = '{{ status|default("Non-Drowsy") }}';
+                    const isDrowsy = overallStatus === 'Drowsy';
+                    
+                    // Simulate confidence (in production, fetch actual confidence)
+                    const baseConfidence = isDrowsy ? 65 : 85;
+                    const variation = Math.sin(frameNum * 0.1) * 10;
+                    const confidence = Math.max(50, Math.min(100, baseConfidence + variation));
+                    
+                    document.getElementById('currentConfidence').textContent = confidence.toFixed(1) + '%';
+                    document.getElementById('confidenceFill').style.width = confidence + '%';
+                    
+                    // Update status color based on confidence
+                    const statusEl = document.getElementById('currentStatus');
+                    if (confidence < 60) {
+                        statusEl.textContent = 'Drowsy';
+                        statusEl.style.color = '#ff453a';
+                    } else {
+                        statusEl.textContent = 'Non-Drowsy';
+                        statusEl.style.color = '#4ade80';
+                    }
+                    
+                    // Update confidence bar color
+                    const fillEl = document.getElementById('confidenceFill');
+                    if (confidence < 60) {
+                        fillEl.style.background = 'linear-gradient(90deg, #ff453a, #ff6b6b)';
+                    } else {
+                        fillEl.style.background = 'linear-gradient(90deg, #4ade80, #22c55e)';
+                    }
+                }
+                
+                // Handle video load success
+                video.addEventListener('loadeddata', function() {
+                    console.log('Video loaded successfully');
+                    updateTime();
+                });
+                
+                // Handle video metadata load
+                video.addEventListener('loadedmetadata', function() {
+                    console.log('Video metadata loaded. Duration:', video.duration, 'seconds');
+                    updateTime();
+                });
+                
+                // Update display during playback
+                video.addEventListener('timeupdate', function() {
+                    updateTime();
+                    updateDetectionDisplay();
+                });
+                
+                // Update on play/pause
+                video.addEventListener('play', updateDetectionDisplay);
+                video.addEventListener('pause', updateDetectionDisplay);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Real-Time Driver Drowsiness Detection and Alert System (DDAS)</title>
+    <link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="section-dark">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span>DDAS</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home" class="nav-link nav-button">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/live" class="nav-link nav-button">Live Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/graphs" class="nav-link nav-button">Graphs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link nav-button">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div style="padding-top: 100px; padding-bottom: 40px;">
+        <div class="camera-header">
+            <h1 class="features-title">Web Based Real-Time Facial Features Driver Monitoring (DDAS)</h1>
+            <p style="color: rgb(204, 218, 235);">Live AI analysis for fatigue detection</p>
+        </div>
+
+        <div class="camera-container">
+            <img src="{{ url_for('video_feed') }}" class="camera-feed">
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/home" class="card-btn" style="display: inline-block; width: auto; text-decoration: none;">Back to
+                Dashboard</a>
+        </div>
+    </div>
+</body>
+
+</html>

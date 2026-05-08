@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>WEB BASED REAL-TIME FACIAL FEATURES-BASED DRIVER DROWSINESS DETECTION AND ALERT SYSTEM (DDAS)</title>
+	<link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+
+<body>
+	<nav class="navbar">
+		<div class="nav-container">
+			<div class="nav-logo">
+				<span>DDAS</span>
+			</div>
+			<ul class="nav-menu">
+				<li class="nav-item">
+					<a href="/" class="nav-link">Home</a>
+				</li>
+				<li class="nav-item">
+					<a href="/logon" class="nav-link nav-button">Get Started</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="pimg1">
+		<div class="container1">
+			<div class="title">WEB BASED REAL-TIME FACIAL FEATURES-BASED DDAS</div>
+			<div class="subtitle">Driver Drowsiness Detection and Alert System</div>
+			<div class="welcome-text">
+				Welcome to the WEB BASED REAL-TIME FACIAL FEATURES-BASED DRIVER DROWSINESS DETECTION AND ALERT SYSTEM (DDAS).
+				Our intelligent monitoring platform uses facial feature analysis and machine learning to detect driver fatigue
+				in real time, trigger timely alerts, and help prevent road accidents.
+			</div>
+		</div>
+	</div>
+
+	<section class="section section-dark">
+		<div class="about-section">
+			<h1 class="about-title">About Our System</h1>
+			<div class="about-container">
+				<div class="about-image">
+					<img src="{{ url_for('static', filename='assets/shibua_gif.gif') }}"
+						alt="Drowsiness Detection System">
+				</div>
+				<div class="about-content">
+					<p class="about-text">
+						Our Drowsiness Detection System leverages cutting-edge Deep Learning technology to monitor
+						driver behavior and detect signs of fatigue in real-time. Using advanced facial recognition
+						and computer vision algorithms, the system analyzes eye aspect ratio (EAR) and mouth aspect
+						ratio (MAR) to calculate a comprehensive fatigue score.
+					</p>
+					<p class="about-text">
+						The system continuously monitors the driver's state and provides immediate alerts when
+						drowsiness is detected. With features like real-time fatigue scoring, automatic alarm
+						systems, and emergency contact notifications, we ensure maximum safety for drivers on the road.
+					</p>
+					<ul class="about-features">
+						<li>Real-time fatigue score calculation using EAR and MAR</li>
+						<li>Advanced Deep Learning algorithms for accurate detection</li>
+						<li>Automatic alarm system when fatigue levels are critical</li>
+						<li>Emergency contact notification with GPS location</li>
+						<li>Interactive dashboard for continuous monitoring</li>
+						<li>User-friendly interface for easy setup and operation</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>DRIVER'S DROWSINESS DETECTION </title>
+	<link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+
+<body>
+	<nav class="navbar">
+		<div class="nav-container">
+			<div class="nav-logo">
+				<span>DDAS</span>
+			</div>
+			<ul class="nav-menu">
+				<li class="nav-item">
+					<a href="/home" class="nav-link nav-button">Home</a>
+				</li>
+				<li class="nav-item">
+					<a href="/live" class="nav-link nav-button">Live Feed</a>
+				</li>
+				<li class="nav-item">
+					<a href="/graphs" class="nav-link nav-button">Graphs</a>
+				</li>
+				<li class="nav-item">
+					<a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+				</li>
+				<li class="nav-item">
+					<a href="/logout" class="nav-link nav-button">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="pimg1">
+		<div class="container1">
+			<div class="title">DRIVER'S DROWSINESS DETECTION</div>
+			<div class="subtitle">Driver Drowsiness Detection and Alert System</div>
+			<div class="welcome-text">
+				Welcome to the WEB BASED REAL-TIME FACIAL FEATURES-BASED DRIVER DROWSINESS DETECTION AND ALERT SYSTEM (DDAS).
+				Our intelligent monitoring platform uses facial feature analysis and machine learning to detect driver fatigue
+				in real time, trigger timely alerts, and help prevent road accidents.
+			</div>
+		</div>
+	</div>
+
+	<section class="section section-dark">
+		<div class="features-section">
+			<h1 class="features-title">Smart Safety Diagnostics</h1>
+			<div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+				<!-- Image Upload Card -->
+				<div class="feature-card">
+					<div class="feature-icon">📸</div>
+					<h3 class="feature-card-title">Image Analysis</h3>
+					<p class="feature-card-text">
+						Upload a driver image to analyze fatigue levels using our advanced CNN model and Grad-CAM
+						visualization.
+					</p>
+					<form action="/predict_image" method="post" enctype="multipart/form-data" class="upload-form">
+						<div class="file-input-wrapper">
+							<input type="file" name="image" id="image-upload" accept="image/*" required>
+						</div>
+						<button type="submit" class="card-btn">Analyze Image</button>
+					</form>
+				</div>
+
+				<!-- Video Upload Card -->
+				<div class="feature-card">
+					<div class="feature-icon">🎥</div>
+					<h3 class="feature-card-title">Video Analysis</h3>
+					<p class="feature-card-text">
+						Upload a video clip to perform temporal fatigue analysis and monitor eye aspect ratio over time.
+					</p>
+					<form action="/predict_video" method="post" enctype="multipart/form-data" class="upload-form">
+						<div class="file-input-wrapper">
+							<input type="file" name="video" id="video-upload" accept="video/*" required>
+						</div>
+						<button type="submit" class="card-btn">Analyze Video</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	</div>
+
+</body>
+
+</html>

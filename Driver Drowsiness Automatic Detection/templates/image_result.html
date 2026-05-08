@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Analysis Result - DDAS</title>
+    <link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span>DDAS</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home" class="nav-link nav-button">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/live" class="nav-link nav-button">Live Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/graphs" class="nav-link nav-button">Graphs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link nav-button">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="section section-dark" style="padding-top: 120px; min-height: 100vh;">
+        <div class="result-container">
+            <div class="result-header">
+                <h1 class="features-title">Detailed Analysis Report</h1>
+            </div>
+
+            <div class="result-metric-grid">
+                <div class="result-card">
+                    <h3 class="feature-card-title">Driver State</h3>
+                    <div
+                        class="status-badge {% if prediction == 'Drowsy' %}status-drowsy{% else %}status-safe{% endif %}">
+                        {{ prediction }}
+                    </div>
+                </div>
+                <div class="result-card">
+                    <h3 class="feature-card-title">AI Confidence</h3>
+                    <div class="metric-value">{{ confidence }}%</div>
+                    <div class="progress-container">
+                        <div class="progress-fill" style="width: {{ confidence }}%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-card">
+                    <h3 class="feature-card-title">Original Input</h3>
+                    <div class="zoom-wrapper">
+                        <img src="{{ url_for('static', filename='uploads/' + image_file) }}" class="result-image"
+                            alt="Original Image">
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3 class="feature-card-title">Grad-CAM Visualization</h3>
+                    <div class="zoom-wrapper">
+                        <img src="{{ url_for('static', filename='gradcam/' + cam_file) }}" class="result-image"
+                            alt="Grad-CAM">
+                    </div>
+                    <p class="feature-card-text" style="font-size: 0.85em; margin-top: 10px; color: #888;">
+                        Heatmap highlights critical features (eyes/mouth) that influenced the prediction.
+                    </p>
+                </div>
+            </div>
+
+            <!-- New Suggestions Section -->
+            <div class="suggestions-section">
+                <h2 class="feature-card-title" style="margin-bottom: 25px; text-align: left;">Safety Insights &
+                    Recommendations</h2>
+
+                {% if prediction == 'Drowsy' %}
+                <div class="suggestion-card suggestion-warning">
+                    <div class="suggestion-icon">⚠️</div>
+                    <div>
+                        <strong>Critical Warning:</strong> Fatigue detected. We recommend immediate rest.
+                        Avoid driving until you are fully revitalized.
+                    </div>
+                </div>
+                <div class="suggestion-card suggestion-warning"
+                    style="background: rgba(255, 159, 10, 0.1); border-left-color: #ff9f0a; color: #ffca80;">
+                    <div class="suggestion-icon">💡</div>
+                    <div>
+                        <strong>Recommendation:</strong> Take a 20-minute power nap or consume a caffeinated beverage if
+                        stop-gap measures are needed.
+                    </div>
+                </div>
+                {% else %}
+                <div class="suggestion-card suggestion-safe">
+                    <div class="suggestion-icon">✅</div>
+                    <div>
+                        <strong>Safe to Proceed:</strong> No significant fatigue detected. However, always remain
+                        vigilant and
+                        take breaks every 2 hours during long journeys.
+                    </div>
+                </div>
+                <div class="suggestion-card suggestion-safe"
+                    style="background: rgba(10, 132, 255, 0.1); border-left-color: #0a84ff; color: #80c4ff;">
+                    <div class="suggestion-icon">ℹ️</div>
+                    <div>
+                        <strong>Tip:</strong> Ensure your cabin is well-ventilated and the temperature is comfortable to
+                        maintain alertness.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 50px; text-align: center;">
+                <a href="/home" class="card-btn" style="display: inline-block; width: auto; min-width: 280px;">Return to
+                    Dashboard</a>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

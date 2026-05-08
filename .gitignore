@@ -1,0 +1,11 @@
+*.mp4
+*.avi
+*.webm
+*.pth
+*.dat
+*.zip
+.DS_Store
+static/uploads/
+static/results/
+models/
+real_time/

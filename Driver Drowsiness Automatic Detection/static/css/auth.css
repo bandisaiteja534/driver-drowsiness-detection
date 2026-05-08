@@ -1,0 +1,134 @@
+.auth-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 120px;
+}
+
+.auth-wrapper {
+  width: 100%;
+  max-width: 560px;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 34px 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.35);
+}
+
+.auth-title {
+  color: #fff;
+  font-size: 34px;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.auth-subtitle {
+  color: rgb(204, 218, 235);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-form label {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.auth-form input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: rgba(115, 177, 240, 0.9);
+  box-shadow: 0 0 0 3px rgba(115, 177, 240, 0.18);
+}
+
+.auth-alert {
+  background: linear-gradient(135deg, rgba(255, 69, 58, 0.18), rgba(180, 45, 39, 0.14));
+  color: #ffd9d6;
+  border: 1px solid rgba(255, 100, 90, 0.55);
+  border-left: 4px solid rgba(255, 85, 76, 0.95);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 20px rgba(130, 20, 20, 0.2);
+  animation: authAlertIn 0.25s ease-out;
+}
+
+.auth-alert-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.auth-alert-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.auth-alert-title {
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.auth-alert-text {
+  margin: 0;
+  line-height: 1.45;
+  color: #ffd9d6;
+}
+
+.auth-switch {
+  margin-top: 18px;
+  color: rgb(204, 218, 235);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: #73b1f0;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+@keyframes authAlertIn {
+  from {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

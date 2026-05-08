@@ -1,0 +1,285 @@
+DROWSINESS DETECTION SYSTEM (DDS) – WORKFLOW
+
+----------------------------
+USER AUTHENTICATION & ENTRY
+----------------------------
+  -- User Registration
+       -- Enter username, name, email, mobile number, password
+       -- Store credentials in root SQLite database (signup.db)
+       -- Redirect to login page
+
+  -- User Login
+       -- Enter username and password
+       -- Verify credentials against database
+       -- Store current user in root current_user.txt
+       -- Special admin login (admin/admin)
+       -- Redirect to home dashboard
+
+
+----------------------------
+MAIN APPLICATION ENTRY (ROOT APP)
+----------------------------
+  -- Flask App Initialization
+       -- Create root Flask app instance
+       -- Register realtime blueprint: /drowsy/*
+       -- Create upload/result folders
+       -- Load classification model (Xception) if available
+
+  -- Main Navigation Routes
+       -- Home page (/)
+       -- Home dashboard (/home)
+       -- Live page (/live)
+       -- Graphs page (/graphs)
+       -- Logout (/logout)
+
+
+----------------------------
+IMAGE/VIDEO CLASSIFICATION (ROOT APP)
+----------------------------
+  -- Image Classification
+       -- Route: /predict_image
+       -- Save uploaded image to static/uploads
+       -- Preprocess image (resize, normalize, tensor)
+       -- Run model inference
+       -- Compute confidence via softmax
+       -- Generate Grad-CAM heatmap
+       -- Save visualization to static/gradcam
+       -- Render image result page
+
+  -- Video Classification
+       -- Route: /predict_video
+       -- Save uploaded video to static/uploads
+       -- Read video frame-by-frame (OpenCV)
+       -- Run frame-wise inference
+       -- Count drowsy frames
+       -- Write processed output video to static/results
+       -- Final status:
+           - Drowsy (if drowsy frames > 40%)
+           - Non-Drowsy (otherwise)
+       -- Render video result page
+
+  -- Video File Serving
+       -- Route: /video_feed_file/<filename>
+       -- Serve uploaded/processed videos safely
+
+
+----------------------------
+REAL-TIME DROWSINESS MODULE (BLUEPRINT)
+----------------------------
+  -- Blueprint Integration
+       -- Module: real_time/app.py
+       -- Prefix: /drowsy
+       -- API-first realtime detection module
+
+  -- Realtime API Endpoints
+       -- /drowsy/api/start_detection
+       -- /drowsy/api/stop_detection
+       -- /drowsy/api/detection_data
+       -- /drowsy/api/video_feed
+       -- /drowsy/api/get_location
+
+
+----------------------------
+DETECTION INITIALIZATION
+----------------------------
+  -- Start Detection
+       -- Start background thread (run_detection)
+       -- Initialize webcam (cv2.VideoCapture)
+       -- Load predictor file: real_time/SVMclassifier.dat
+       -- Initialize dlib face detector + 68-point landmarks
+       -- Set thresholds:
+           - EYE_AR_THRESH = 0.25
+           - MOU_AR_THRESH = 0.75
+           - FATIGUE_SCORE_THRESHOLD = 70
+
+
+----------------------------
+FATIGUE SCORE CALCULATION
+----------------------------
+  -- Calculate Fatigue Score (0-100)
+       -- EAR Component (0-60 points)
+           - EAR >= 0.25: 0 points (Fully alert)
+           - EAR 0.22-0.25: 0-20 points (Slight drowsiness)
+           - EAR 0.18-0.22: 20-45 points (Moderate drowsiness)
+           - EAR 0.12-0.18: 45-60 points (Severe drowsiness)
+           - EAR < 0.12: 60 points (Very closed eyes)
+
+       -- MAR Component (0-35 points)
+           - MAR <= 0.5: 0 points (No yawning)
+           - MAR 0.5-0.65: 0-12 points (Slight yawning)
+           - MAR 0.65-0.9: 12-30 points (Yawning)
+           - MAR > 0.9: 30-35 points (Deep yawning)
+
+       -- Eye Closure Component (0-25 points)
+           - eye_closed_frames * 0.7 (max 25 points)
+
+       -- Total Score
+           - fatigue_score = EAR_score + MAR_score + Eye_Closure_score
+           - Penalty: +15 points if eyes closed + mouth open
+
+
+----------------------------
+ALARM SYSTEM LOGIC
+----------------------------
+  -- Alarm Trigger Condition
+       -- IF fatigue_score > 70:
+           -- Start continuous alarm
+           -- Set alarm_start_time = current_time
+           -- Set continuous_alarm_started = True
+           -- Start alarm thread (play_alarm_continuous)
+           -- Display "DROWSINESS ALERT! FATIGUE HIGH!"
+
+  -- Alarm Continuation Logic
+       -- WHILE fatigue_score > 70:
+           -- Keep alarm playing
+           -- Keep alarm thread alive
+           -- Update alarm duration
+
+  -- Alarm Stop Logic (with delay)
+       -- IF fatigue_score < 70 AND alarm is playing:
+           -- Start low_fatigue_start_time
+           -- Continue alarm until delay completes
+           -- IF below threshold for 4.5 seconds:
+               -- Stop alarm
+               -- Reset alarm state flags
+           -- ELSE:
+               -- Keep alarm playing
+               -- Display countdown
+
+       -- IF fatigue_score rises above threshold before delay ends:
+           -- Reset low_fatigue_start_time
+           -- Continue alarm without interruption
+
+
+----------------------------
+ALARM SOUND PLAYBACK
+----------------------------
+  -- Primary Playback
+       -- Use pygame mixer
+       -- Load and play real_time/alarm.mp3
+       -- Restart immediately for near-seamless playback
+
+  -- Fallback Playback
+       -- Use playsound loop if pygame path fails
+
+  -- Threading
+       -- Alarm runs in daemon thread
+       -- Controlled by alarm_playing and driver_responded flags
+
+
+----------------------------
+EMERGENCY NOTIFICATION SYSTEM
+----------------------------
+  -- Notification Trigger
+       -- IF continuous alarm > 30 seconds and no response:
+           -- Fetch current location
+           -- Fetch user email from root signup.db
+           -- Send emergency email
+           -- Set notification_sent = True
+
+  -- Email Notification (Current Implementation)
+       -- SMTP server: smtp.gmail.com:587 (TLS)
+       -- Subject: "URGENT: Driver Drowsiness Alert"
+       -- Body includes:
+           - Fatigue score
+           - Critical status
+           - Location
+           - Timestamp
+       -- Sent to logged-in user email
+
+  -- User Email Resolution
+       -- Read root current_user.txt
+       -- Query root signup.db for matching user email
+       -- Fallback: latest registered user email
+
+  -- Note
+       -- SMS/Twilio flow removed from current implementation
+
+
+----------------------------
+LOCATION TRACKING
+----------------------------
+  -- Location Retrieval Methods (fallback chain)
+       -- Method 1: geocoder.gps()
+       -- Method 2: geocoder.ip('me')
+       -- Method 3: ip-api.com
+       -- Method 4: ipapi.co
+       -- Method 5: ipinfo.io
+       -- Method 6: ipify + ip-api.com
+
+  -- Output Format
+       -- "City, State, Country (Latitude: X.XXXXXX, Longitude: Y.YYYYYY)"
+       -- Or coordinates only
+       -- Fallback: "Location unavailable"
+
+
+----------------------------
+REAL-TIME DASHBOARD DATA FLOW
+----------------------------
+  -- Detection Data API
+       -- /drowsy/api/detection_data returns:
+           - fatigue_score
+           - ear
+           - mar
+           - status
+           - alarm
+           - eyes_open
+           - mouth_open
+           - yawn_count
+           - is_yawning
+           - alarm_duration
+           - continuous_alarm
+
+  -- Video Streaming API
+       -- /drowsy/api/video_feed streams MJPEG frames
+       -- Uses processed_frame from detection thread
+       -- Sends default/error frame fallback when needed
+
+
+----------------------------
+FRAME PROCESSING PIPELINE
+----------------------------
+  -- Processing Loop
+       1. Capture frame from webcam
+       2. Resize frame
+       3. Convert to grayscale
+       4. Detect face(s) using dlib
+       5. Extract facial landmarks
+       6. Compute EAR and MAR
+       7. Compute fatigue score
+       8. Apply alarm/notification logic
+       9. Draw overlays and status labels
+       10. Store processed frame
+       11. Update detection_data dictionary
+       12. Sleep briefly for steady processing
+
+
+----------------------------
+SYSTEM INTEGRATION POINTS
+----------------------------
+1. ROOT FLASK APPLICATION:
+   - Main routes and authentication
+   - Model-based image/video classification
+   - Registers realtime blueprint
+
+2. REALTIME BLUEPRINT:
+   - Live detection APIs
+   - Background detection and alarm threading
+   - Video stream + detection data APIs
+
+3. COMPUTER VISION:
+   - OpenCV for capture/processing
+   - dlib + facial landmarks for eye/mouth analysis
+   - imutils and scipy geometry utilities
+
+4. NOTIFICATIONS:
+   - SMTP Gmail email alerts (active)
+   - SMS/Twilio removed
+
+5. STORAGE:
+   - root signup.db for users/emails
+   - root current_user.txt for active user tracking
+
+6. FRONTEND INTERACTION:
+   - Root templates/pages
+   - Live page consumes /drowsy/api/* for realtime updates

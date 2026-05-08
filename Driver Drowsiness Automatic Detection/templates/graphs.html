@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Data Visualization - DDAS</title>
+	<link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+	<nav class="navbar">
+		<div class="nav-container">
+			<div class="nav-logo">
+				<span>DDAS</span>
+			</div>
+			<ul class="nav-menu">
+				<li class="nav-item">
+					<a href="/home" class="nav-link nav-button">Home</a>
+				</li>
+				<li class="nav-item">
+					<a href="/live" class="nav-link nav-button">Live Feed</a>
+				</li>
+				<li class="nav-item">
+					<a href="/graphs" class="nav-link nav-button">Graphs</a>
+				</li>
+				<li class="nav-item">
+					<a href="../static/notebook.html" class="nav-link nav-button">Notebook</a>
+				</li>
+				<li class="nav-item">
+					<a href="/logout" class="nav-link nav-button">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- Data Visualization Header -->
+	<div class="graphs-header">
+		<div class="graphs-header-content">
+			<h1 class="graphs-title">Data Visualization</h1>
+			<p class="graphs-subtitle">
+				Comprehensive performance metrics and analysis of our Deep Learning models.
+				Explore confusion matrices, ROC curves, and detailed evaluation metrics across all models.
+			</p>
+		</div>
+	</div>
+
+	<!-- Graphs Section -->
+	<section class="graphs-section">
+		<div class="graphs-container">
+			<h1 class="features-title">Model Performance Metrics</h1>
+			<div class="graphs-grid">
+				<!-- Confusion Matrix -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download.png') }}" data-title="Confusion Matrix">
+					<h3 class="graph-title">Confusion Matrix</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download.png') }}" alt="Confusion Matrix" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+
+				<!-- ROC Curve -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download (1).png') }}" data-title="ROC Curve">
+					<h3 class="graph-title">ROC Curve</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download (1).png') }}" alt="ROC Curve" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+
+				<!-- Accuracy of All Models -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download (2).png') }}" data-title="Accuracy of All Models">
+					<h3 class="graph-title">Accuracy of All Models</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download (2).png') }}" alt="Accuracy of All Models" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+
+				<!-- Precision of All Models -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download (3).png') }}" data-title="Precision of All Models">
+					<h3 class="graph-title">Precision of All Models</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download (3).png') }}" alt="Precision of All Models" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+
+				<!-- Recall of All Models -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download (4).png') }}" data-title="Recall of All Models">
+					<h3 class="graph-title">Recall of All Models</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download (4).png') }}" alt="Recall of All Models" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+
+				<!-- F1-Score of All Models -->
+				<div class="graph-card" data-image="{{ url_for('static', filename='graphs/download (5).png') }}" data-title="F1-Score of All Models">
+					<h3 class="graph-title">F1-Score of All Models</h3>
+					<div class="graph-image-wrapper">
+						<img src="{{ url_for('static', filename='graphs/download (5).png') }}" alt="F1-Score of All Models" class="graph-image">
+						<div class="zoom-icon">🔍</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Zoom Modal -->
+	<div id="zoomModal" class="zoom-modal" onclick="closeZoomModal(event)">
+		<span class="zoom-modal-close" onclick="closeZoomModal(event)">&times;</span>
+		<div class="zoom-modal-content" onclick="event.stopPropagation()">
+			<img id="zoomedImage" class="zoom-modal-image" src="" alt="Zoomed Graph">
+			<div id="zoomedTitle" class="zoom-modal-title"></div>
+		</div>
+	</div>
+
+	<script src="{{ url_for('static', filename='js/graphs.js') }}"></script>
+</body>
+
+</html>

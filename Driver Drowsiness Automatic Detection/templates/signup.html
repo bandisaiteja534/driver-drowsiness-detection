@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - DDAS</title>
+  <link rel="icon" href="../static/assets/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span>DDAS</span>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="/" class="nav-link nav-button">Home</a></li>
+        <li class="nav-item"><a href="/login" class="nav-link nav-button">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="section section-dark auth-section">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <h1 class="auth-title">Create DDAS Account</h1>
+        <p class="auth-subtitle">Register to use the web based real-time facial features-based driver drowsiness detection and alert system</p>
+
+        {% if message %}
+        <div class="auth-alert" role="alert" aria-live="polite">
+          <div class="auth-alert-head">
+            <span class="auth-alert-icon">!</span>
+            <span class="auth-alert-title">Please fix this</span>
+          </div>
+          <p class="auth-alert-text">{{ message }}</p>
+        </div>
+        {% endif %}
+
+        <form action="/signup" method="post" class="auth-form">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="user" required>
+
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+
+          <label for="number">Mobile Number</label>
+          <input type="tel" id="number" name="mobile" required>
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+
+          <button type="submit" class="card-btn">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
